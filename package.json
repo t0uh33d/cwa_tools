@@ -3,6 +3,10 @@
   "displayName": "CWA Tools",
   "description": "Extenstion to work with Flutter CWA",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/t0uh33d/cwa-tools.git"
+  },
   "engines": {
     "vscode": "^1.99.0"
   },
@@ -10,6 +14,9 @@
     "Other"
   ],
   "main": "./out/extension.js",
+  "activationEvents": [
+    "onCommand:cwaTools.addToAppStrings"
+  ],
   "contributes": {
     "commands": [
       {

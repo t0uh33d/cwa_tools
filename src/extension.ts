@@ -28,7 +28,8 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const config = vscode.workspace.getConfiguration('cwaTools');
-        const appStringsPath = config.get<string>('appStringsPath', 'lib/app_strings.dart');
+        const defaultAppStringsPath = 'lib/core/l10n/app_strings.dart';
+        const appStringsPath = config.get<string>('appStringsPath', defaultAppStringsPath);
         const workspaceFolders = vscode.workspace.workspaceFolders;
 
         if (!workspaceFolders || workspaceFolders.length === 0) {
@@ -45,11 +46,19 @@ export function activate(context: vscode.ExtensionContext) {
             }
 
             const appStringsContent = fs.readFileSync(appStringsFullPath, 'utf-8');
-            const updatedContent = `${appStringsContent}\n  static const ${variableName} = '${selectedText}';`;
+            const classEndIndex = appStringsContent.lastIndexOf('}');
+            if (classEndIndex === -1) {
+                vscode.window.showErrorMessage('Could not find the end of the AppStrings class.');
+                return;
+            }
+
+            const sanitizedText = selectedText.trim().replace(/^['"]|['"]$/g, '');
+            const getterContent = `  String get ${variableName} => '${sanitizedText}';\n`;
+            const updatedContent = appStringsContent.slice(0, classEndIndex) + getterContent + appStringsContent.slice(classEndIndex);
             fs.writeFileSync(appStringsFullPath, updatedContent, 'utf-8');
 
             editor.edit(editBuilder => {
-                editBuilder.replace(selection, `AppString.ofUntranslated(context).${variableName}`);
+                editBuilder.replace(selection, `AppStrings.ofUntranslated(context).${variableName}`);
             });
 
             vscode.window.showInformationMessage(`Added '${selectedText}' to AppStrings as '${variableName}'.`);
