@@ -1,4 +1,4 @@
-![CWA Tools Logo](images/logo.png)
+![CWA Tools Logo](https://github.com/t0uh33d/cwa_tools/blob/main/images/logo.png?raw=true)
 
 # CWA Tools
 
