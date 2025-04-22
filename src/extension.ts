@@ -1,26 +1,80 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    const addToAppStrings = vscode.commands.registerCommand('cwaTools.addToAppStrings', async () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showErrorMessage('No active editor found.');
+            return;
+        }
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "cwa-tools" is now active!');
+        const selection = editor.selection;
+        const selectedText = editor.document.getText(selection);
+        if (!selectedText || selectedText.trim() === '') {
+            vscode.window.showErrorMessage('No text selected.');
+            return;
+        }
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('cwa-tools.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from CWA Tools!');
-	});
+        const variableName = await vscode.window.showInputBox({
+            prompt: 'Enter a variable name for the selected string',
+            validateInput: (input) => input && input.trim() !== '' ? null : 'Variable name cannot be empty.'
+        });
 
-	context.subscriptions.push(disposable);
+        if (!variableName) {
+            vscode.window.showErrorMessage('Variable name input was cancelled.');
+            return;
+        }
+
+        const config = vscode.workspace.getConfiguration('cwaTools');
+        const appStringsPath = config.get<string>('appStringsPath', 'lib/app_strings.dart');
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+
+        if (!workspaceFolders || workspaceFolders.length === 0) {
+            vscode.window.showErrorMessage('No workspace folder found.');
+            return;
+        }
+
+        const appStringsFullPath = path.join(workspaceFolders[0].uri.fsPath, appStringsPath);
+
+        try {
+            if (!fs.existsSync(appStringsFullPath)) {
+                vscode.window.showErrorMessage(`AppStrings file not found at ${appStringsFullPath}`);
+                return;
+            }
+
+            const appStringsContent = fs.readFileSync(appStringsFullPath, 'utf-8');
+            const updatedContent = `${appStringsContent}\n  static const ${variableName} = '${selectedText}';`;
+            fs.writeFileSync(appStringsFullPath, updatedContent, 'utf-8');
+
+            editor.edit(editBuilder => {
+                editBuilder.replace(selection, `AppString.ofUntranslated(context).${variableName}`);
+            });
+
+            vscode.window.showInformationMessage(`Added '${selectedText}' to AppStrings as '${variableName}'.`);
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            vscode.window.showErrorMessage(`Error updating AppStrings: ${errorMessage}`);
+        }
+    });
+
+    context.subscriptions.push(addToAppStrings);
+
+    // Use the console to output diagnostic information (console.log) and errors (console.error)
+    // This line of code will only be executed once when your extension is activated
+    console.log('Congratulations, your extension "cwa-tools" is now active!');
+
+    // The command has been defined in the package.json file
+    // Now provide the implementation of the command with registerCommand
+    // The commandId parameter must match the command field in package.json
+    let disposable = vscode.commands.registerCommand('cwa-tools.helloWorld', () => {
+        // The code you place here will be executed every time your command is executed
+        // Display a message box to the user
+        vscode.window.showInformationMessage('Hello World from CWA Tools!');
+    });
+
+    context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
