@@ -2,13 +2,14 @@
   "name": "cwa-tools",
   "displayName": "CWA Tools",
   "description": "Extenstion to work with Flutter CWA",
-  "version": "0.0.1",
+  "version": "0.0.3",
+  "publisher": "CodewaveTechnologies",
   "repository": {
     "type": "git",
     "url": "https://github.com/t0uh33d/cwa-tools.git"
   },
   "engines": {
-    "vscode": "^1.99.0"
+    "vscode": "^1.50.0"
   },
   "categories": [
     "Other"
@@ -56,15 +57,23 @@
     "lint": "eslint src --ext ts",
     "test": "vscode-test"
   },
+  "files": [
+    "out",
+    "images",
+    "src",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "devDependencies": {
-    "@types/vscode": "^1.99.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/vscode": "^1.50.0",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
-    "eslint": "^8.57.0",
-    "typescript": "^5.4.5",
     "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.3.9"
+    "@vscode/test-electron": "^2.3.9",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
   }
 }

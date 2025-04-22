@@ -1,3 +1,5 @@
+![CWA Tools Logo](images/logo.png)
+
 # CWA Tools
 
 CWA Tools is a Visual Studio Code extension designed to enhance productivity when working with Flutter projects. It provides a convenient way to manage app strings by adding them to a centralized `AppStrings` class.
@@ -7,7 +9,7 @@ CWA Tools is a Visual Studio Code extension designed to enhance productivity whe
 - **Add to App Strings**: Highlight a string in your Dart code, right-click, and select "Add to App Strings". The extension will:
   - Prompt you for a variable name.
   - Add the string to the `AppStrings` class.
-  - Replace the selected string in your code with `AppString.ofUntranslated(context).{variable_name}`.
+  - Replace the selected string in your code with `AppStrings.ofUntranslated(context).{variable_name}`.
 
 ## Configuration
 
@@ -51,7 +53,10 @@ Calling out known issues can help limit users opening duplicate issues against y
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
+
+- Initial release of CWA Tools.
+- Added the "Add to App Strings" feature for Flutter projects.
 
 ### 1.0.0
 
