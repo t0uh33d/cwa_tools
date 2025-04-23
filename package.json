@@ -2,7 +2,7 @@
   "name": "cwa-tools",
   "displayName": "CWA Tools",
   "description": "Extenstion to work with Flutter CWA",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "CodewaveTechnologies",
   "repository": {
     "type": "git",
@@ -44,7 +44,7 @@
       "properties": {
         "cwaTools.appStringsPath": {
           "type": "string",
-          "default": "lib/app_strings.dart",
+          "default": "lib/core/l10n/app_strings.dart",
           "description": "Path to the AppStrings class file."
         }
       }
